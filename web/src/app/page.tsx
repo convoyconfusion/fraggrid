@@ -17,7 +17,7 @@ export default async function HomePage() {
           Live stats and rankings, across four games.
         </h1>
         <p className="text-fluid-base relative z-10 mt-3 max-w-2xl text-text-muted">
-          CS2 and Valorant update automatically throughout the day. BGMI and PUBG Mobile
+          CS2 and Valorant update automatically once a day. BGMI and PUBG Mobile
           are curated by our team until a reliable live data feed exists for those titles.
         </p>
       </section>
