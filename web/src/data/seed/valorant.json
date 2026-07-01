@@ -1,0 +1,71 @@
+{
+  "game": "valorant",
+  "matches": {
+    "running": [
+      {
+        "id": "val-r1",
+        "status": "running",
+        "scheduledAt": null,
+        "league": "VCT Americas",
+        "serie": "Regular Season",
+        "tournament": "Week 4",
+        "bestOf": 3,
+        "teamA": { "name": "Sentinels", "acronym": "SEN" },
+        "teamB": { "name": "NRG", "acronym": "NRG" },
+        "scoreA": 1,
+        "scoreB": 1
+      }
+    ],
+    "upcoming": [
+      {
+        "id": "val-u1",
+        "status": "not_started",
+        "scheduledAt": "2026-07-02T20:00:00Z",
+        "league": "VCT Americas",
+        "serie": "Regular Season",
+        "tournament": "Week 4",
+        "bestOf": 3,
+        "teamA": { "name": "LOUD", "acronym": "LOUD" },
+        "teamB": { "name": "Leviatan", "acronym": "LEV" },
+        "scoreA": 0,
+        "scoreB": 0
+      },
+      {
+        "id": "val-u2",
+        "status": "not_started",
+        "scheduledAt": "2026-07-03T00:00:00Z",
+        "league": "VCT EMEA",
+        "serie": "Regular Season",
+        "tournament": "Week 4",
+        "bestOf": 3,
+        "teamA": { "name": "Fnatic", "acronym": "FNC" },
+        "teamB": { "name": "Team Heretics", "acronym": "TH" },
+        "scoreA": 0,
+        "scoreB": 0
+      }
+    ]
+  },
+  "standings": [
+    { "rank": 1, "team": "Sentinels", "acronym": "SEN", "w": 6, "l": 1, "rd": 8 },
+    { "rank": 2, "team": "LOUD", "acronym": "LOUD", "w": 5, "l": 2, "rd": 5 },
+    { "rank": 3, "team": "NRG", "acronym": "NRG", "w": 5, "l": 2, "rd": 4 },
+    { "rank": 4, "team": "Leviatan", "acronym": "LEV", "w": 4, "l": 3, "rd": 1 },
+    { "rank": 5, "team": "Fnatic", "acronym": "FNC", "w": 4, "l": 3, "rd": 0 },
+    { "rank": 6, "team": "Team Heretics", "acronym": "TH", "w": 3, "l": 4, "rd": -2 },
+    { "rank": 7, "team": "Evil Geniuses", "acronym": "EG", "w": 2, "l": 5, "rd": -6 },
+    { "rank": 8, "team": "100 Thieves", "acronym": "100T", "w": 1, "l": 6, "rd": -10 }
+  ],
+  "standingsContext": "VCT Americas — Regular Season (sample data)",
+  "teams": [
+    { "name": "Sentinels", "acronym": "SEN", "region": "NA" },
+    { "name": "NRG", "acronym": "NRG", "region": "NA" },
+    { "name": "LOUD", "acronym": "LOUD", "region": "BR" },
+    { "name": "Leviatan", "acronym": "LEV", "region": "LATAM" },
+    { "name": "Fnatic", "acronym": "FNC", "region": "EMEA" },
+    { "name": "Team Heretics", "acronym": "TH", "region": "EMEA" },
+    { "name": "Evil Geniuses", "acronym": "EG", "region": "NA" },
+    { "name": "100 Thieves", "acronym": "100T", "region": "NA" }
+  ],
+  "playersAvailable": false,
+  "generatedAt": null
+}

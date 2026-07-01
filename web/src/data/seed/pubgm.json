@@ -1,0 +1,40 @@
+{
+  "game": "pubgm",
+  "matches": {
+    "running": [],
+    "upcoming": [
+      {
+        "id": "pubgm-u1",
+        "status": "not_started",
+        "scheduledAt": "2026-07-05T09:00:00Z",
+        "league": "PMPL South Asia",
+        "serie": "League Stage",
+        "tournament": "Week 3, Day 1",
+        "bestOf": null,
+        "teamA": { "name": "Nigma Galaxy", "acronym": "NIGMA" },
+        "teamB": { "name": "Orange Rock", "acronym": "OR" },
+        "scoreA": 0,
+        "scoreB": 0
+      }
+    ]
+  },
+  "standings": [
+    { "rank": 1, "team": "Nigma Galaxy", "acronym": "NIGMA", "w": 5, "l": 15, "rd": 205 },
+    { "rank": 2, "team": "Orange Rock", "acronym": "OR", "w": 4, "l": 15, "rd": 188 },
+    { "rank": 3, "team": "Bigetron RA", "acronym": "BTR", "w": 3, "l": 15, "rd": 171 },
+    { "rank": 4, "team": "Unique Esports", "acronym": "UE", "w": 3, "l": 15, "rd": 160 },
+    { "rank": 5, "team": "Zombie Esports", "acronym": "ZMB", "w": 2, "l": 15, "rd": 140 },
+    { "rank": 6, "team": "Villain Esports", "acronym": "VLN", "w": 1, "l": 15, "rd": 119 }
+  ],
+  "standingsContext": "PMPL South Asia — League Stage (sample data, staff-entered)",
+  "teams": [
+    { "name": "Nigma Galaxy", "acronym": "NIGMA", "region": "SEA" },
+    { "name": "Orange Rock", "acronym": "OR", "region": "IN" },
+    { "name": "Bigetron RA", "acronym": "BTR", "region": "ID" },
+    { "name": "Unique Esports", "acronym": "UE", "region": "PK" },
+    { "name": "Zombie Esports", "acronym": "ZMB", "region": "NP" },
+    { "name": "Villain Esports", "acronym": "VLN", "region": "IN" }
+  ],
+  "playersAvailable": false,
+  "generatedAt": null
+}

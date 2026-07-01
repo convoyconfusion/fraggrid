@@ -1,0 +1,64 @@
+[
+  {
+    "slug": "vitality-navi-katowice-recap",
+    "title": "Vitality overpower NAVI in Katowice group stage thriller",
+    "dek": "A 13-9 scoreline doesn't tell the whole story of a map that swung three times in the second half.",
+    "body": [
+      "Vitality took down Natus Vincere 13-9 in what was easily the most contested series of the IEM Katowice group stage so far.",
+      "NAVI opened strong on the T-side, racing to a 7-2 lead before Vitality's mid-round calling took over. From there, Vitality won 11 of the next 15 rounds to close the map out.",
+      "The win keeps Vitality unbeaten in Group A heading into the final round-robin matches."
+    ],
+    "game": "cs2",
+    "author": "Priya N.",
+    "publishedAt": "2026-06-29T10:00:00Z"
+  },
+  {
+    "slug": "vct-americas-week4-preview",
+    "title": "VCT Americas Week 4: Sentinels look to extend their lead",
+    "dek": "Sentinels sit atop the table at 6-1, but NRG and LOUD aren't far behind.",
+    "body": [
+      "Week 4 of VCT Americas kicks off with Sentinels holding a one-map lead over the chasing pack.",
+      "NRG's aggressive Fade-Sova composition has been the story of the split so far, and this week's matchup against Sentinels could decide first place heading into playoffs."
+    ],
+    "game": "valorant",
+    "author": "Priya N.",
+    "publishedAt": "2026-06-30T08:30:00Z"
+  },
+  {
+    "slug": "bgmi-series-week2-soul-clutch",
+    "title": "Soul clinch Week 2 top spot with a 21-kill finals day",
+    "dek": "A dominant final circle in Erangel sealed the top spot for Soul heading into the playoffs push.",
+    "body": [
+      "Soul's aggressive rotation into the final circle on Erangel paid off with a chicken dinner and a combined 21 kills across the day's six matches.",
+      "The result puts them narrowly ahead of Global Esports and GodLike in the BGMI Series League Stage standings."
+    ],
+    "game": "bgmi",
+    "author": "Arjun K.",
+    "publishedAt": "2026-06-28T14:00:00Z"
+  },
+  {
+    "slug": "pmpl-south-asia-nigma-galaxy-form",
+    "title": "Nigma Galaxy's slow-and-steady approach is paying off in PMPL",
+    "dek": "No individual match wins yet, but consistent top-5 finishes have Nigma Galaxy leading the table.",
+    "body": [
+      "Nigma Galaxy haven't won a single match in PMPL South Asia's League Stage so far, but their placement consistency has them comfortably in first.",
+      "It's a reminder that in points-based battle royale formats, survival often beats aggression over a long league stage."
+    ],
+    "game": "pubgm",
+    "author": "Arjun K.",
+    "publishedAt": "2026-06-27T11:15:00Z"
+  },
+  {
+    "slug": "why-were-covering-four-games",
+    "title": "Why FRAGGRID covers CS2, Valorant, BGMI and PUBGM — and not more (yet)",
+    "dek": "A note on scope: we'd rather do four games well than twelve games shallowly.",
+    "body": [
+      "We're launching FRAGGRID with a deliberately narrow lineup: two PC tactical shooters with strong public stats APIs, and two mobile battle royale titles with passionate regional scenes but far less structured data available.",
+      "For CS2 and Valorant, match schedules, standings and team data update automatically throughout the day. For BGMI and PUBGM, our team is entering results manually until a reliable commercial data feed exists for those titles — accuracy over false automation.",
+      "More titles may come later. For now, this is where we're putting our effort."
+    ],
+    "game": "editorial",
+    "author": "The FRAGGRID Team",
+    "publishedAt": "2026-07-01T09:00:00Z"
+  }
+]

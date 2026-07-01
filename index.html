@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRAGGRID — Esports Dashboard</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=inter:400,500,600|rajdhani:500,600,700|jetbrains-mono:400,500" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+  :root{
+    --bg:#EEF1F5;
+    --surface:#FFFFFF;
+    --surface-2:#F4F6F9;
+    --border:#DDE1E7;
+    --text:#14171C;
+    --text-dim:#5B6169;
+    --text-faint:#8A9099;
+    --cs2:#C2410C;
+    --cs2-dim:#FBE4D2;
+    --val:#0E7A88;
+    --val-dim:#D8F0F1;
+    --live:#DC2626;
+    --win:#15803D;
+    --rl:#7C3AED;
+    --rl-dim:#EDE9FE;
+    --dota:#B45309;
+    --dota-dim:#FEF3C7;
+    --lol:#1D4ED8;
+    --lol-dim:#DBEAFE;
+    --r6:#374151;
+    --r6-dim:#F3F4F6;
+
+    /* Fluid type scale */
+    --text-sm:   clamp(0.8rem,  1.5vw, 0.9rem);
+    --text-base: clamp(1rem,    2vw,   1.1rem);
+    --text-lg:   clamp(1.2rem,  2.5vw, 1.4rem);
+    --text-xl:   clamp(1.5rem,  3vw,   2rem);
+    --text-2xl:  clamp(2rem,    5vw,   3.5rem);
+    --text-3xl:  clamp(2.5rem,  7vw,   5rem);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(20,23,28,0.035) 0px, rgba(20,23,28,0.035) 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(90deg, rgba(20,23,28,0.035) 0px, rgba(20,23,28,0.035) 1px, transparent 1px, transparent 40px);
+    pointer-events:none;
+    z-index:0;
+  }
+  .clip{
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .clip-sm{
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+
+  /* ===== Ticker ===== */
+  .ticker-wrap{
+    background:var(--surface-2);
+    border-bottom:1px solid var(--border);
+    overflow:hidden;
+    white-space:nowrap;
+    position:relative;
+    z-index:2;
+  }
+  .ticker-label{
+    position:absolute;left:0;top:0;bottom:0;
+    background:var(--live);
+    color:#FFFFFF;
+    font-family:'Rajdhani',sans-serif;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:0.12em;
+    display:flex;align-items:center;
+    padding:0 12px;
+    z-index:3;
+  }
+  .ticker-track{
+    display:inline-flex;
+    animation: marquee 38s linear infinite;
+    padding-left:110px;
+  }
+  .ticker-item{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 28px;
+    font-size:12.5px;
+    color:var(--text-dim);
+    border-right:1px solid var(--border);
+  }
+  .ticker-tag{
+    font-family:'Rajdhani',sans-serif;
+    font-weight:700;
+    font-size:10px;
+    letter-spacing:0.08em;
+    padding:1px 6px;
+    border-radius:2px;
+  }
+  .tag-cs2{background:var(--cs2-dim);color:var(--cs2);}
+  .tag-val{background:var(--val-dim);color:var(--val);}
+  @keyframes marquee{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ticker-track{animation:none;}
+  }
+
+  /* ===== Nav ===== */
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 32px;
+    border-bottom:1px solid var(--border);
+    position:relative;z-index:2;
+  }
+  .logo{
+    font-family:'Rajdhani',sans-serif;
+    font-weight:700;
+    font-size:21px;
+    letter-spacing:0.01em;
+    display:flex;align-items:center;gap:9px;
+  }
+  .logo-mark{
+    width:11px;height:11px;
+    background:linear-gradient(135deg,var(--cs2),var(--val));
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    transform:rotate(45deg);
+  }
+  .logo span{color:var(--text-faint);font-weight:500;font-size:13px;letter-spacing:0.04em;margin-left:2px;}
+  .navlinks{display:flex;gap:28px;}
+  .navlinks a{
+    color:var(--text-dim);text-decoration:none;
+    font-size:13.5px;font-weight:500;
+    transition:color .15s;
+  }
+  .navlinks a:hover, .navlinks a:focus-visible{color:var(--text);}
+  .navlinks a.active{color:var(--text);}
+
+  .gametabs{display:flex;gap:0;border:1px solid var(--border);border-radius:3px;overflow:hidden;}
+  .gametab{
+    font-family:'Rajdhani',sans-serif;font-weight:600;font-size:12.5px;letter-spacing:0.05em;
+    padding:7px 16px;background:transparent;color:var(--text-dim);
+    border:none;cursor:pointer;transition:all .15s;
+  }
+  .gametab:hover{color:var(--text);}
+  .gametab.on[data-g="cs2"] {background:var(--cs2-dim);color:var(--cs2);}
+  .gametab.on[data-g="val"] {background:var(--val-dim);color:var(--val);}
+  .gametab.on[data-g="rl"]  {background:var(--rl-dim);color:var(--rl);}
+  .gametab.on[data-g="dota"]{background:var(--dota-dim);color:var(--dota);}
+  .gametab.on[data-g="lol"] {background:var(--lol-dim);color:var(--lol);}
+  .gametab.on[data-g="r6"]  {background:var(--r6-dim);color:var(--r6);}
+
+  main{max-width:1180px;margin:0 auto;padding:36px 32px 80px;position:relative;z-index:2;}
+
+  /* ===== Live strip ===== */
+  .section-label{
+    font-family:'Rajdhani',sans-serif;font-weight:600;font-size:12px;
+    letter-spacing:0.14em;color:var(--text-faint);text-transform:uppercase;
+    margin-bottom:14px;display:flex;align-items:center;gap:10px;
+  }
+  .section-label::after{content:"";flex:1;height:1px;background:var(--border);}
+  .live-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:42px;}
+  .match-card{
+    background:var(--surface);border:1px solid var(--border);
+    padding:18px 20px;position:relative;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .match-card.is-live{border-color:rgba(220,38,38,0.35);}
+  .match-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .match-meta{font-size:11.5px;color:var(--text-faint);}
+  .live-pill{
+    font-family:'Rajdhani',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:0.1em;
+    color:var(--live);display:flex;align-items:center;gap:6px;
+  }
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--live);animation:pulse 1.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+  .teamrow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
+  .teamname{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;}
+  .teamname .badge{
+    width:26px;height:26px;background:var(--surface-2);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Rajdhani',sans-serif;font-weight:700;font-size:10.5px;color:var(--text-dim);
+  }
+  .score{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:500;}
+  .score.win{color:var(--win);}
+  .match-bottom{display:flex;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+  .tag{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:10px;letter-spacing:0.08em;padding:2px 7px;}
+
+  /* ===== Standings ===== */
+  .panel{background:var(--surface);border:1px solid var(--border);margin-bottom:42px;}
+  .panel-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+  .panel-title{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:15px;letter-spacing:0.02em;}
+  .panel-sub{font-size:11.5px;color:var(--text-faint);}
+  table{width:100%;border-collapse:collapse;}
+  thead th{
+    text-align:left;font-size:10.5px;letter-spacing:0.08em;color:var(--text-faint);
+    text-transform:uppercase;font-weight:600;padding:10px 20px;border-bottom:1px solid var(--border);
+    cursor:default;
+  }
+  th.sortable{cursor:pointer;user-select:none;}
+  th.sortable:hover{color:var(--text-dim);}
+  th .arrow{margin-left:4px;font-size:9px;opacity:0.6;}
+  tbody td{padding:11px 20px;font-size:13.5px;border-bottom:1px solid var(--border);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:rgba(20,23,28,0.035);}
+  td.num, th.num{font-family:'JetBrains Mono',monospace;text-align:right;}
+  td.rank{font-family:'JetBrains Mono',monospace;color:var(--text-faint);width:30px;}
+  .team-cell{display:flex;align-items:center;gap:10px;}
+  .mini-badge{
+    width:22px;height:22px;background:var(--surface-2);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;flex:none;
+    font-family:'Rajdhani',sans-serif;font-weight:700;font-size:9px;color:var(--text-dim);
+  }
+  .player-cell .pname{font-weight:500;}
+  .player-cell .pteam{font-size:11px;color:var(--text-faint);margin-left:6px;}
+
+  /* ===== Teams grid ===== */
+  .teams-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .team-card{
+    background:var(--surface);border:1px solid var(--border);padding:18px;
+    transition:border-color .15s;
+  }
+  .team-card:hover{border-color:var(--text-faint);}
+  .team-card-top{display:flex;align-items:center;gap:11px;margin-bottom:14px;}
+  .team-card-badge{
+    width:36px;height:36px;background:var(--surface-2);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12.5px;
+  }
+  .team-card-name{font-weight:600;font-size:14px;}
+  .team-card-region{font-size:11px;color:var(--text-faint);}
+  .roster{display:flex;flex-wrap:wrap;gap:5px;}
+  .roster span{
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text-dim);
+    background:var(--surface-2);padding:3px 7px;border:1px solid var(--border);
+  }
+
+  .disclaimer{
+    margin-top:30px;padding:13px 18px;background:var(--surface);border:1px dashed var(--border);
+    font-size:11.5px;color:var(--text-faint);line-height:1.6;
+  }
+  .disclaimer b{color:var(--text-dim);}
+
+  footer{
+    border-top:1px solid var(--border);padding:22px 32px;
+    display:flex;justify-content:space-between;color:var(--text-faint);font-size:11.5px;
+    position:relative;z-index:2;
+  }
+
+  @media (max-width: 880px){
+    .live-grid{grid-template-columns:1fr;}
+    .teams-grid{grid-template-columns:repeat(2,1fr);}
+    .navlinks{display:none;}
+    nav{padding:14px 18px;}
+    main{padding:24px 18px 60px;}
+  }
+
+  /* ===== Spotlight cursor ===== */
+  /* Only on devices with an actual mouse, and only when the visitor hasn't
+     asked for reduced motion. Tied to the active game's accent color
+     instead of an unrelated purple, so it reads as part of the same system
+     as the tags/badges rather than a bolted-on effect. */
+  @media (pointer: fine){
+    body{cursor:none;}
+    .cursor{
+      position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
+      width:20px;height:20px;border-radius:50%;
+      background:var(--cursor-accent, var(--live));
+      opacity:0.32;
+      transform:translate(-50%,-50%);
+      transition:transform .15s ease, width .2s, height .2s, opacity .2s;
+    }
+    .cursor.grow{transform:translate(-50%,-50%) scale(2.1);opacity:0.22;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    body{cursor:auto;}
+    .cursor{display:none;}
+  }
+
+  /* ===== Blob cursor ===== */
+  .blur-shape{
+    position:fixed;top:0;left:0;
+    width:420px;height:420px;
+    background:radial-gradient(circle, rgba(123,94,167,0.45), transparent 70%);
+    filter:blur(60px);
+    border-radius:50%;
+    pointer-events:none;
+    z-index:1;
+  }
+  @media (prefers-reduced-motion:reduce){ .blur-shape{display:none;} }
+
+  /* ===== Stagger nav menu ===== */
+  .menu-toggle{
+    display:none;
+    font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:0.08em;
+    background:none;border:1px solid var(--border);padding:6px 14px;
+    color:var(--text);cursor:pointer;
+  }
+  .menu-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(238,241,245,0.96);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    z-index:50;
+    align-items:center;justify-content:center;
+  }
+  .menu-overlay.open{ display:flex; }
+  .menu-links{
+    list-style:none;display:flex;flex-direction:column;
+    align-items:center;gap:8px;
+  }
+  .menu-links a{
+    font-family:'Rajdhani',sans-serif;font-weight:700;
+    font-size:clamp(2.5rem,8vw,4.5rem);
+    letter-spacing:0.01em;color:var(--text);text-decoration:none;
+    display:block;transition:color .15s;
+  }
+  .menu-links a:hover{ color:var(--cs2); }
+  .menu-close{
+    position:absolute;top:20px;right:28px;
+    font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.08em;
+    background:none;border:1px solid var(--border);padding:6px 14px;
+    color:var(--text);cursor:pointer;
+  }
+  @media (max-width:880px){
+    .menu-toggle{ display:block; }
+    .navlinks{ display:none !important; }
+  }
+
+  /* ===== Scroll reveal ===== */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+  }
+
+  /* ===== Testimonial carousel ===== */
+  .testimonials-section{ margin-bottom:42px; }
+  .t-marquee{
+    overflow:hidden;height:420px;position:relative;
+  }
+  .t-marquee::before,.t-marquee::after{
+    content:'';position:absolute;left:0;right:0;height:70px;z-index:1;pointer-events:none;
+  }
+  .t-marquee::before{ top:0;background:linear-gradient(to bottom,var(--bg),transparent); }
+  .t-marquee::after{  bottom:0;background:linear-gradient(to top,var(--bg),transparent); }
+  .t-track{
+    display:inline-flex;flex-direction:column;gap:14px;
+    animation:scroll-vertical 22s linear infinite;
+  }
+  .t-marquee:hover .t-track{ animation-play-state:paused; }
+  @keyframes scroll-vertical{
+    from{ transform:translateY(0); }
+    to{   transform:translateY(-50%); }
+  }
+  @media (prefers-reduced-motion:reduce){ .t-track{ animation:none; } }
+  .t-card{
+    background:var(--surface);border:1px solid var(--border);
+    padding:18px 20px;width:380px;display:flex;flex-direction:column;gap:12px;
+    clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+  }
+  .t-text{ font-size:13.5px;line-height:1.65;color:var(--text);margin:0; }
+  .t-author{
+    display:flex;align-items:center;gap:10px;
+    padding-top:10px;border-top:1px solid var(--border);
+  }
+  .t-avatar{
+    width:30px;height:30px;flex-shrink:0;
+    background:linear-gradient(135deg,var(--cs2),var(--val));
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;
+  }
+  .t-name{ font-size:13px;font-weight:600;color:var(--text); }
+  .t-role{ font-size:11px;color:var(--text-faint);margin-top:1px; }
+
+  /* ===== Extra game tag colours ===== */
+  .tag-rl  {background:var(--rl-dim);color:var(--rl);}
+  .tag-dota{background:var(--dota-dim);color:var(--dota);}
+  .tag-lol {background:var(--lol-dim);color:var(--lol);}
+  .tag-r6  {background:var(--r6-dim);color:var(--r6);}
+
+  /* ===== Category nav bar ===== */
+  .cat-bar{
+    display:flex;align-items:center;gap:0;
+    border-bottom:1px solid var(--border);
+    background:var(--surface);
+    overflow-x:auto;scrollbar-width:none;
+    position:relative;z-index:2;
+  }
+  .cat-bar::-webkit-scrollbar{display:none;}
+  .cat-btn{
+    font-family:'Rajdhani',sans-serif;font-weight:600;font-size:12px;letter-spacing:0.1em;
+    text-transform:uppercase;padding:10px 20px;
+    background:none;border:none;border-bottom:2px solid transparent;
+    color:var(--text-faint);cursor:pointer;white-space:nowrap;
+    transition:color .15s, border-color .15s;
+  }
+  .cat-btn:hover{color:var(--text);}
+  .cat-btn.active{color:var(--text);border-bottom-color:var(--text);}
+
+  /* ===== Featured hero article ===== */
+  .hero-article{
+    display:grid;grid-template-columns:1fr 380px;gap:0;
+    border:1px solid var(--border);margin-bottom:42px;
+    background:var(--surface);
+    clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));
+  }
+  .hero-img{
+    position:relative;overflow:hidden;min-height:340px;
+    background:#1a1e26;
+  }
+  .hero-img img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    opacity:0.85;transition:opacity .3s;
+  }
+  .hero-article:hover .hero-img img{opacity:1;}
+  .hero-img-overlay{
+    position:absolute;inset:0;
+    background:linear-gradient(to right,rgba(20,23,28,0.55) 0%,transparent 60%);
+  }
+  .hero-body{
+    padding:28px 28px 24px;display:flex;flex-direction:column;justify-content:space-between;
+    border-left:1px solid var(--border);
+  }
+  .hero-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+  .hero-title{
+    font-family:'Rajdhani',sans-serif;font-weight:700;
+    font-size:clamp(1.3rem,2.5vw,1.75rem);line-height:1.2;
+    color:var(--text);margin-bottom:12px;
+  }
+  .hero-excerpt{font-size:13.5px;line-height:1.65;color:var(--text-dim);margin-bottom:20px;}
+  .hero-meta{display:flex;align-items:center;gap:12px;font-size:11.5px;color:var(--text-faint);}
+  .hero-author{font-weight:500;color:var(--text-dim);}
+  .hero-read-more{
+    display:inline-flex;align-items:center;gap:6px;margin-top:auto;
+    font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;
+    color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);
+    padding-bottom:2px;transition:border-color .15s;
+  }
+  .hero-read-more:hover{border-color:var(--text);}
+
+  /* ===== News grid + trending sidebar ===== */
+  .news-layout{
+    display:grid;grid-template-columns:1fr 300px;gap:28px;
+    margin-bottom:42px;
+  }
+  .news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .news-card{
+    background:var(--surface);border:1px solid var(--border);
+    display:flex;flex-direction:column;
+    transition:border-color .15s;cursor:pointer;
+  }
+  .news-card:hover{border-color:var(--text-faint);}
+  .news-thumb{
+    aspect-ratio:16/9;overflow:hidden;
+    background:#1a1e26;position:relative;
+  }
+  .news-thumb img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    transition:transform .4s ease;
+  }
+  .news-card:hover .news-thumb img{transform:scale(1.04);}
+  .news-body{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column;gap:8px;}
+  .news-tag-row{display:flex;align-items:center;gap:8px;}
+  .news-headline{
+    font-family:'Rajdhani',sans-serif;font-weight:700;
+    font-size:15px;line-height:1.25;color:var(--text);
+    flex:1;
+  }
+  .news-time{font-size:11px;color:var(--text-faint);margin-top:auto;}
+
+  /* ===== Trending sidebar ===== */
+  .trending{
+    background:var(--surface);border:1px solid var(--border);
+    display:flex;flex-direction:column;
+    align-self:start;position:sticky;top:16px;
+  }
+  .trending-head{
+    padding:12px 16px;border-bottom:1px solid var(--border);
+    font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;
+    letter-spacing:0.12em;text-transform:uppercase;color:var(--text-faint);
+    display:flex;align-items:center;gap:8px;
+  }
+  .trending-head::before{
+    content:'';width:6px;height:6px;border-radius:50%;
+    background:var(--live);animation:pulse 1.4s ease-in-out infinite;flex-shrink:0;
+  }
+  .trending-item{
+    display:flex;align-items:flex-start;gap:12px;
+    padding:12px 16px;border-bottom:1px solid var(--border);
+    cursor:pointer;transition:background .15s;
+  }
+  .trending-item:last-child{border-bottom:none;}
+  .trending-item:hover{background:var(--surface-2);}
+  .trending-num{
+    font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:500;
+    color:var(--border);line-height:1;flex-shrink:0;min-width:24px;
+  }
+  .trending-text{flex:1;}
+  .trending-title{font-size:12.5px;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:4px;}
+  .trending-meta{font-size:11px;color:var(--text-faint);}
+
+  /* ===== Responsive ===== */
+  @media(max-width:880px){
+    .hero-article{grid-template-columns:1fr;}
+    .hero-body{border-left:none;border-top:1px solid var(--border);}
+    .news-layout{grid-template-columns:1fr;}
+    .news-grid{grid-template-columns:1fr 1fr;}
+    .trending{position:static;}
+  }
+  @media(max-width:540px){
+    .news-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="cursor" aria-hidden="true"></div>
+<div class="blur-shape" aria-hidden="true"></div>
+
+<!-- Stagger menu overlay -->
+<div class="menu-overlay" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <button class="menu-close" id="menuClose">CLOSE</button>
+  <ul class="menu-links" id="menuLinks">
+    <li><a href="#">Dashboard</a></li>
+    <li><a href="#">Standings</a></li>
+    <li><a href="#">Players</a></li>
+    <li><a href="#">Teams</a></li>
+    <li><a href="#">Matches</a></li>
+  </ul>
+</div>
+
+<div class="ticker-wrap">
+  <div class="ticker-label">RECENT&nbsp;HAPPENINGS</div>
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<nav>
+  <div class="logo"><div class="logo-mark"></div>FRAGGRID<span>STATS &amp; STANDINGS</span></div>
+  <div class="navlinks">
+    <a href="#" class="active">Dashboard</a>
+    <a href="#">Standings</a>
+    <a href="#">Players</a>
+    <a href="#">Teams</a>
+    <a href="#">Matches</a>
+  </div>
+  <button class="menu-toggle" id="menuToggle">MENU</button>
+  <div class="gametabs" id="gameTabs">
+    <button class="gametab btn on" data-g="cs2">CS2</button>
+    <button class="gametab btn" data-g="val">VALORANT</button>
+    <button class="gametab btn" data-g="rl">ROCKET LEAGUE</button>
+    <button class="gametab btn" data-g="dota">DOTA 2</button>
+    <button class="gametab btn" data-g="lol">LOL</button>
+    <button class="gametab btn" data-g="r6">R6</button>
+  </div>
+</nav>
+
+<nav class="cat-bar" aria-label="Content categories">
+  <button class="cat-btn active">All</button>
+  <button class="cat-btn">News</button>
+  <button class="cat-btn">Transfers</button>
+  <button class="cat-btn">Tournaments</button>
+  <button class="cat-btn">Analysis</button>
+  <button class="cat-btn">Interviews</button>
+  <button class="cat-btn">Gear</button>
+  <button class="cat-btn">Videos</button>
+</nav>
+
+<div id="statusBar" style="display:none;text-align:center;padding:6px 0;font-size:11px;letter-spacing:.04em;color:var(--text-faint);border-bottom:1px solid var(--border);"></div>
+
+<main>
+  <!-- Featured hero article -->
+  <div class="hero-article reveal" id="heroArticle"></div>
+
+  <!-- Latest news -->
+  <div class="section-label reveal">Latest News</div>
+  <div class="news-layout reveal">
+    <div class="news-grid" id="newsGrid"></div>
+    <aside class="trending" id="trendingPanel"></aside>
+  </div>
+
+  <div class="section-label reveal">Live &amp; Upcoming</div>
+  <div class="live-grid reveal" id="liveGrid"></div>
+
+  <div class="section-label reveal">League Standings</div>
+  <div class="panel reveal">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title" id="standingsTitle">CS2 — IEM Katowice Group Stage</div>
+        <div class="panel-sub" id="standingsSub">Updated continuously once live data is connected</div>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th class="num">#</th>
+          <th>Team</th>
+          <th class="num">W</th>
+          <th class="num">L</th>
+          <th class="num">RD</th>
+        </tr>
+      </thead>
+      <tbody id="standingsBody"></tbody>
+    </table>
+  </div>
+
+  <div class="section-label reveal">Player Leaderboard</div>
+  <div class="panel reveal">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">Top Performers</div>
+        <div class="panel-sub">Click a column to sort</div>
+      </div>
+    </div>
+    <table>
+      <thead id="leaderHead"></thead>
+      <tbody id="leaderBody"></tbody>
+    </table>
+  </div>
+
+  <div class="section-label reveal">What people are saying</div>
+  <div class="testimonials-section reveal">
+    <div class="t-marquee">
+      <div class="t-track" id="testimonialTrack"></div>
+    </div>
+  </div>
+
+  <div class="section-label reveal">Team Spotlight</div>
+  <div class="teams-grid reveal" id="teamsGrid"></div>
+
+  <div class="disclaimer">
+    <b>Player Leaderboard note:</b> Live match data, standings, and team listings come from PandaScore's free tier. Per-player performance stats (rating, ADR/ACS, K/D) require PandaScore's paid Historical plan, so that one panel stays on illustrative sample data until that's upgraded.
+  </div>
+</main>
+
+<footer>
+  <span>FRAGGRID</span>
+  <span id="footerNote">Data: PandaScore</span>
+</footer>
+
+<script>
+/* ---------- config ---------- */
+const FILE_OF = { cs2: "cs2", val: "valorant", rl: "rl", dota: "dota", lol: "lol", r6: "r6" };
+const GAME_LABEL = { cs2: "CS2", val: "VALORANT", rl: "Rocket League", dota: "Dota 2", lol: "League of Legends", r6: "Rainbow Six" };
+
+// Minimal embedded fallback, used only if the ./data/*.json files can't be
+// fetched (e.g. previewing this single file without the rest of the project
+// alongside it). Once deployed with data/cs2.json + data/valorant.json next
+// to this file, those take over automatically.
+const FALLBACK = {
+  cs2: {
+    isSample: true,
+    matches: {
+      running: [{ status:"running", league:"IEM Katowice", serie:"Group Stage", tournament:"Group A", bestOf:3,
+        teamA:{name:"Vitality",acronym:"VIT"}, teamB:{name:"Natus Vincere",acronym:"NAVI"}, scoreA:13, scoreB:9 }],
+      upcoming: [{ status:"not_started", scheduledAt:null, league:"IEM Katowice", serie:"Group Stage", tournament:"Group A", bestOf:3,
+        teamA:{name:"Spirit",acronym:"SPR"}, teamB:{name:"MOUZ",acronym:"MOUZ"}, scoreA:0, scoreB:0 }]
+    },
+    standings: [
+      {rank:1,team:"Vitality",acronym:"VIT",w:7,l:1,rd:42},{rank:2,team:"Natus Vincere",acronym:"NAVI",w:6,l:2,rd:31},
+      {rank:3,team:"Spirit",acronym:"SPR",w:6,l:2,rd:24},{rank:4,team:"MOUZ",acronym:"MOUZ",w:5,l:3,rd:11}
+    ],
+    teams: [{name:"Vitality",acronym:"VIT",region:"EU"},{name:"Natus Vincere",acronym:"NAVI",region:"EU"},
+      {name:"Spirit",acronym:"SPR",region:"EU"},{name:"MOUZ",acronym:"MOUZ",region:"EU"}],
+    generatedAt: null
+  },
+  val: {
+    isSample: true,
+    matches: {
+      running: [{ status:"running", league:"VCT Americas", serie:"Stage 1", tournament:"Group Stage", bestOf:3,
+        teamA:{name:"Sentinels",acronym:"SEN"}, teamB:{name:"NRG",acronym:"NRG"}, scoreA:1, scoreB:1 }],
+      upcoming: [{ status:"not_started", scheduledAt:null, league:"VCT Americas", serie:"Stage 1", tournament:"Group Stage", bestOf:3,
+        teamA:{name:"LOUD",acronym:"LOUD"}, teamB:{name:"100 Thieves",acronym:"100T"}, scoreA:0, scoreB:0 }]
+    },
+    standings: [
+      {rank:1,team:"Sentinels",acronym:"SEN",w:8,l:1,rd:14},{rank:2,team:"LOUD",acronym:"LOUD",w:7,l:2,rd:11},
+      {rank:3,team:"NRG",acronym:"NRG",w:6,l:3,rd:6},{rank:4,team:"100 Thieves",acronym:"100T",w:5,l:4,rd:2}
+    ],
+    teams: [{name:"Sentinels",acronym:"SEN",region:"NA"},{name:"LOUD",acronym:"LOUD",region:"BR"},
+      {name:"NRG",acronym:"NRG",region:"NA"},{name:"100 Thieves",acronym:"100T",region:"NA"}],
+    generatedAt: null
+  },
+  rl: {
+    isSample:true,
+    matches:{
+      running:[{status:"running",league:"RLCS 2025",serie:"Worlds",tournament:"Group A",bestOf:5,teamA:{name:"Karmine Corp",acronym:"KC"},teamB:{name:"NRG",acronym:"NRG"},scoreA:2,scoreB:1}],
+      upcoming:[{status:"not_started",scheduledAt:null,league:"RLCS 2025",serie:"Worlds",tournament:"Group B",bestOf:5,teamA:{name:"FaZe",acronym:"FAZ"},teamB:{name:"G2",acronym:"G2"},scoreA:0,scoreB:0}]
+    },
+    standings:[
+      {rank:1,team:"Karmine Corp",acronym:"KC",w:6,l:1,rd:18},{rank:2,team:"NRG",acronym:"NRG",w:5,l:2,rd:12},
+      {rank:3,team:"FaZe",acronym:"FAZ",w:5,l:2,rd:9},{rank:4,team:"G2",acronym:"G2",w:4,l:3,rd:3}
+    ],
+    teams:[{name:"Karmine Corp",acronym:"KC",region:"EU"},{name:"NRG",acronym:"NRG",region:"NA"},{name:"FaZe",acronym:"FAZ",region:"NA"},{name:"G2",acronym:"G2",region:"EU"}],
+    generatedAt:null
+  },
+  dota: {
+    isSample:true,
+    matches:{
+      running:[{status:"running",league:"The International 2025",serie:"Main Event",tournament:"Upper Bracket",bestOf:3,teamA:{name:"Team Spirit",acronym:"SPR"},teamB:{name:"Tundra",acronym:"TND"},scoreA:1,scoreB:0}],
+      upcoming:[{status:"not_started",scheduledAt:null,league:"The International 2025",serie:"Main Event",tournament:"Lower Bracket",bestOf:3,teamA:{name:"Liquid",acronym:"TL"},teamB:{name:"OG",acronym:"OG"},scoreA:0,scoreB:0}]
+    },
+    standings:[
+      {rank:1,team:"Team Spirit",acronym:"SPR",w:8,l:0,rd:22},{rank:2,team:"Tundra",acronym:"TND",w:6,l:2,rd:10},
+      {rank:3,team:"Liquid",acronym:"TL",w:5,l:3,rd:6},{rank:4,team:"OG",acronym:"OG",w:4,l:4,rd:-2}
+    ],
+    teams:[{name:"Team Spirit",acronym:"SPR",region:"CIS"},{name:"Tundra",acronym:"TND",region:"EU"},{name:"Liquid",acronym:"TL",region:"EU"},{name:"OG",acronym:"OG",region:"EU"}],
+    generatedAt:null
+  },
+  lol: {
+    isSample:true,
+    matches:{
+      running:[{status:"running",league:"Worlds 2025",serie:"Quarterfinals",tournament:"BO5",bestOf:5,teamA:{name:"T1",acronym:"T1"},teamB:{name:"Gen.G",acronym:"GEN"},scoreA:2,scoreB:2}],
+      upcoming:[{status:"not_started",scheduledAt:null,league:"Worlds 2025",serie:"Quarterfinals",tournament:"BO5",bestOf:5,teamA:{name:"JDG",acronym:"JDG"},teamB:{name:"Cloud9",acronym:"C9"},scoreA:0,scoreB:0}]
+    },
+    standings:[
+      {rank:1,team:"T1",acronym:"T1",w:9,l:1,rd:28},{rank:2,team:"Gen.G",acronym:"GEN",w:8,l:2,rd:19},
+      {rank:3,team:"JDG",acronym:"JDG",w:7,l:3,rd:14},{rank:4,team:"Cloud9",acronym:"C9",w:5,l:5,rd:-1}
+    ],
+    teams:[{name:"T1",acronym:"T1",region:"KR"},{name:"Gen.G",acronym:"GEN",region:"KR"},{name:"JDG",acronym:"JDG",region:"CN"},{name:"Cloud9",acronym:"C9",region:"NA"}],
+    generatedAt:null
+  },
+  r6: {
+    isSample:true,
+    matches:{
+      running:[{status:"running",league:"Six Invitational 2025",serie:"Grand Final",tournament:"BO5",bestOf:5,teamA:{name:"FaZe Clan",acronym:"FAZ"},teamB:{name:"Spacestation",acronym:"SSG"},scoreA:3,scoreB:1}],
+      upcoming:[{status:"not_started",scheduledAt:null,league:"SI 2025",serie:"3rd Place",tournament:"BO3",bestOf:3,teamA:{name:"W7M",acronym:"W7M"},teamB:{name:"BDS",acronym:"BDS"},scoreA:0,scoreB:0}]
+    },
+    standings:[
+      {rank:1,team:"FaZe Clan",acronym:"FAZ",w:7,l:1,rd:16},{rank:2,team:"Spacestation",acronym:"SSG",w:6,l:2,rd:9},
+      {rank:3,team:"W7M",acronym:"W7M",w:5,l:3,rd:4},{rank:4,team:"BDS",acronym:"BDS",w:4,l:4,rd:-3}
+    ],
+    teams:[{name:"FaZe Clan",acronym:"FAZ",region:"NA"},{name:"Spacestation",acronym:"SSG",region:"NA"},{name:"W7M",acronym:"W7M",region:"BR"},{name:"BDS",acronym:"BDS",region:"EU"}],
+    generatedAt:null
+  }
+};
+
+// Player leaderboard stays on illustrative sample data — PandaScore's free
+// tier doesn't include per-player performance stats (see disclaimer in UI).
+const PLAYER_SAMPLE = {
+  cs2: [
+    {name:"ZywOo", team:"Vitality", rating:1.42, adr:88.3, kd:1.51},
+    {name:"donk", team:"Spirit", rating:1.38, adr:91.7, kd:1.46},
+    {name:"m0NESY", team:"G2", rating:1.29, adr:84.1, kd:1.38},
+    {name:"NiKo", team:"FaZe", rating:1.24, adr:81.4, kd:1.29},
+    {name:"sh1ro", team:"Natus Vincere", rating:1.22, adr:75.9, kd:1.31},
+    {name:"device", team:"Astralis", rating:1.18, adr:78.2, kd:1.22}
+  ],
+  val: [
+    {name:"TenZ", team:"Sentinels", rating:1.31, adr:235, kd:1.40},
+    {name:"Aspas", team:"LOUD", rating:1.34, adr:241, kd:1.44},
+    {name:"Demon1", team:"100 Thieves", rating:1.22, adr:218, kd:1.27},
+    {name:"s0m", team:"NRG", rating:1.19, adr:205, kd:1.18},
+    {name:"Boostio", team:"NRG", rating:1.17, adr:201, kd:1.20},
+    {name:"Zellsis", team:"Sentinels", rating:1.09, adr:189, kd:1.10}
+  ],
+  rl: [
+    {name:"jstn", team:"NRG", rating:1.38, adr:312, kd:1.52},
+    {name:"Fairy Peak", team:"Karmine Corp", rating:1.35, adr:298, kd:1.44},
+    {name:"Moist.Chronic", team:"Moist", rating:1.27, adr:281, kd:1.31},
+    {name:"Atomic", team:"FaZe", rating:1.22, adr:274, kd:1.25},
+    {name:"GarrettG", team:"NRG", rating:1.18, adr:265, kd:1.20},
+    {name:"Arsenal", team:"G2", rating:1.11, adr:251, kd:1.14}
+  ],
+  dota: [
+    {name:"Collapse", team:"Spirit", rating:1.44, adr:0, kd:1.61},
+    {name:"Yatoro", team:"Spirit", rating:1.40, adr:0, kd:1.55},
+    {name:"Miracle-", team:"Liquid", rating:1.33, adr:0, kd:1.42},
+    {name:"Puppey", team:"Secret", rating:1.21, adr:0, kd:1.28},
+    {name:"Ceb", team:"OG", rating:1.17, adr:0, kd:1.22},
+    {name:"Topson", team:"OG", rating:1.12, adr:0, kd:1.18}
+  ],
+  lol: [
+    {name:"Faker", team:"T1", rating:1.48, adr:0, kd:1.65},
+    {name:"Zeus", team:"T1", rating:1.39, adr:0, kd:1.51},
+    {name:"Ruler", team:"Gen.G", rating:1.34, adr:0, kd:1.46},
+    {name:"Peanut", team:"Gen.G", rating:1.28, adr:0, kd:1.37},
+    {name:"Knight", team:"JDG", rating:1.22, adr:0, kd:1.29},
+    {name:"Blaber", team:"Cloud9", rating:1.14, adr:0, kd:1.19}
+  ],
+  r6: [
+    {name:"Canadian", team:"FaZe", rating:1.41, adr:0, kd:1.58},
+    {name:"Spoit", team:"W7M", rating:1.36, adr:0, kd:1.47},
+    {name:"Rampy", team:"BDS", rating:1.29, adr:0, kd:1.38},
+    {name:"Bosco", team:"Spacestation", rating:1.24, adr:0, kd:1.31},
+    {name:"Elemzje", team:"BDS", rating:1.19, adr:0, kd:1.24},
+    {name:"Thinkingnade", team:"FaZe", rating:1.12, adr:0, kd:1.16}
+  ]
+};
+const LEADER_COLS = {
+  cs2:  [{k:'name',l:'Player'},{k:'rating',l:'Rating'},{k:'adr',l:'ADR'},{k:'kd',l:'K/D'}],
+  val:  [{k:'name',l:'Player'},{k:'rating',l:'Rating'},{k:'adr',l:'ACS'},{k:'kd',l:'K/D'}],
+  rl:   [{k:'name',l:'Player'},{k:'rating',l:'Rating'},{k:'adr',l:'Score'},{k:'kd',l:'K/D'}],
+  dota: [{k:'name',l:'Player'},{k:'rating',l:'Rating'},{k:'kd',l:'K/D'}],
+  lol:  [{k:'name',l:'Player'},{k:'rating',l:'Rating'},{k:'kd',l:'K/D'}],
+  r6:   [{k:'name',l:'Player'},{k:'rating',l:'Rating'},{k:'kd',l:'K/D'}]
+};
+
+/* ---------- state ---------- */
+let activeGame = "cs2";
+let sortState = { key: "rating", dir: "desc" };
+let GAME_DATA = { cs2: null, val: null, rl: null, dota: null, lol: null, r6: null };
+
+function badgeInitials(name){
+  return (name||"?").split(" ").map(w=>w[0]).join("").slice(0,3).toUpperCase();
+}
+function fmtTime(iso){
+  if(!iso) return "TBD";
+  try { return new Date(iso).toLocaleString(undefined,{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}); }
+  catch(e){ return "TBD"; }
+}
+
+/* ---------- data loading ---------- */
+async function loadGameData(key){
+  const file = FILE_OF[key];
+  try {
+    const res = await fetch(`./data/${file}.json`, { cache: "no-store" });
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch(e){
+    console.warn(`Using embedded fallback for ${key} (couldn't fetch ./data/${file}.json):`, e.message);
+    return FALLBACK[key];
+  }
+}
+
+/* ---------- rendering ---------- */
+function renderStatusBar(){
+  const bar = document.getElementById("statusBar");
+  const d = GAME_DATA[activeGame];
+  if(!d) return;
+  bar.style.display = "block";
+  if(d.isSample){
+    bar.textContent = "Showing sample data — connect PandaScore and run the fetch script to go live.";
+  } else {
+    const when = d.generatedAt ? fmtTime(d.generatedAt) : "just now";
+    bar.textContent = `Live data via PandaScore · last updated ${when}`;
+  }
+}
+
+function renderTicker(){
+  const items = [];
+  for(const g of ["cs2","val"]){
+    const d = GAME_DATA[g];
+    if(!d) continue;
+    for(const m of (d.matches.running||[])){
+      items.push({ g, t: `LIVE — ${m.teamA.name} ${m.scoreA}–${m.scoreB} ${m.teamB.name} (${m.tournament||m.league})` });
+    }
+    for(const m of (d.matches.upcoming||[]).slice(0,3)){
+      items.push({ g, t: `NEXT — ${m.teamA.name} vs ${m.teamB.name} · ${fmtTime(m.scheduledAt)} (${m.league})` });
+    }
+  }
+  if(!items.length) items.push({g:"cs2", t:"No matches in the current window — check back soon"});
+  const html = items.map(i=>`<span class="ticker-item"><span class="ticker-tag tag-${i.g}">${i.g==='cs2'?'CS2':'VAL'}</span>${i.t}</span>`).join("");
+  document.getElementById("tickerTrack").innerHTML = html + html;
+}
+
+function renderLive(){
+  const d = GAME_DATA[activeGame];
+  const cards = [
+    ...d.matches.running.map(m=>({...m, live:true})),
+    ...d.matches.upcoming
+  ].slice(0,2);
+
+  if(!cards.length){
+    document.getElementById("liveGrid").innerHTML = `<div class="match-card"><div class="match-meta">No live or upcoming matches in this window right now.</div></div>`;
+    return;
+  }
+
+  document.getElementById("liveGrid").innerHTML = cards.map(m=>`
+    <div class="match-card ${m.live?'is-live':''}">
+      <div class="match-top">
+        <span class="match-meta">${m.league||''}</span>
+        ${m.live ? `<span class="live-pill"><span class="live-dot"></span>LIVE</span>` : `<span class="match-meta">${fmtTime(m.scheduledAt)}</span>`}
+      </div>
+      <div class="teamrow">
+        <span class="teamname"><span class="badge">${m.teamA.acronym||badgeInitials(m.teamA.name)}</span>${m.teamA.name}</span>
+        <span class="score ${m.scoreA>m.scoreB?'win':''}">${m.scoreA}</span>
+      </div>
+      <div class="teamrow">
+        <span class="teamname"><span class="badge">${m.teamB.acronym||badgeInitials(m.teamB.name)}</span>${m.teamB.name}</span>
+        <span class="score ${m.scoreB>m.scoreA?'win':''}">${m.scoreB}</span>
+      </div>
+      <div class="match-bottom">
+        <span class="tag tag-${activeGame}">${GAME_LABEL[activeGame]}</span>
+        <span class="match-meta">${m.bestOf?`Bo${m.bestOf} · `:''}${m.tournament||m.serie||''}</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderStandings(){
+  const d = GAME_DATA[activeGame];
+  document.getElementById("standingsTitle").textContent =
+    `${GAME_LABEL[activeGame]} — ${d.standingsContext || (d.isSample ? "Sample standings" : "Current tournament")}`;
+  if(!d.standings.length){
+    document.getElementById("standingsBody").innerHTML = `<tr><td colspan="5" class="match-meta" style="padding:16px 20px;">No active tournament standings to show right now.</td></tr>`;
+    return;
+  }
+  document.getElementById("standingsBody").innerHTML = d.standings.map(t=>`
+    <tr>
+      <td class="rank">${t.rank}</td>
+      <td><span class="team-cell"><span class="mini-badge">${t.acronym||badgeInitials(t.team)}</span>${t.team}</span></td>
+      <td class="num">${t.w ?? '—'}</td>
+      <td class="num">${t.l ?? '—'}</td>
+      <td class="num">${t.rd==null ? '—' : (t.rd>0?'+':'')+t.rd}</td>
+    </tr>
+  `).join("");
+}
+
+function renderLeaderHead(){
+  const cols = LEADER_COLS[activeGame];
+  document.getElementById("leaderHead").innerHTML = `<tr>
+    <th class="num">#</th>
+    ${cols.map(c=>`<th class="${c.k==='name'?'':'num sortable'}" data-key="${c.k}">${c.l}${sortState.key===c.k?`<span class="arrow">${sortState.dir==='desc'?'▼':'▲'}</span>`:''}</th>`).join("")}
+  </tr>`;
+  document.querySelectorAll("#leaderHead th.sortable").forEach(th=>{
+    th.addEventListener("click", ()=>{
+      const key = th.dataset.key;
+      if(sortState.key===key){ sortState.dir = sortState.dir==='desc'?'asc':'desc'; }
+      else { sortState = {key, dir:'desc'}; }
+      renderLeaderHead();
+      renderLeaderBody();
+    });
+  });
+}
+
+function renderLeaderBody(){
+  let rows = [...PLAYER_SAMPLE[activeGame]];
+  rows.sort((x,y)=> sortState.dir==='desc' ? y[sortState.key]-x[sortState.key] : x[sortState.key]-y[sortState.key]);
+  if(sortState.key==='name'){
+    rows.sort((x,y)=> sortState.dir==='desc' ? y.name.localeCompare(x.name) : x.name.localeCompare(y.name));
+  }
+  document.getElementById("leaderBody").innerHTML = rows.map((p,i)=>`
+    <tr>
+      <td class="rank">${i+1}</td>
+      <td class="player-cell"><span class="pname">${p.name}</span><span class="pteam">${p.team}</span></td>
+      <td class="num">${p.rating.toFixed(2)}</td>
+      <td class="num">${p.adr}</td>
+      <td class="num">${p.kd.toFixed(2)}</td>
+    </tr>
+  `).join("");
+}
+
+function renderTeams(){
+  const d = GAME_DATA[activeGame];
+  if(!d.teams.length){
+    document.getElementById("teamsGrid").innerHTML = `<div class="match-meta">No teams currently in action to show.</div>`;
+    return;
+  }
+  document.getElementById("teamsGrid").innerHTML = d.teams.map(t=>`
+    <div class="team-card clip-sm">
+      <div class="team-card-top">
+        <div class="team-card-badge">${t.acronym||badgeInitials(t.name)}</div>
+        <div>
+          <div class="team-card-name">${t.name}</div>
+          <div class="team-card-region">${t.region||'—'}</div>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderAll(){
+  renderStatusBar();
+  renderLive();
+  renderStandings();
+  renderLeaderHead();
+  renderLeaderBody();
+  renderTeams();
+}
+
+document.querySelectorAll(".gametab").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".gametab").forEach(b=>b.classList.remove("on"));
+    btn.classList.add("on");
+    activeGame = btn.dataset.g;
+    sortState = {key:'rating', dir:'desc'};
+    const accentMap = { cs2:'var(--cs2)', val:'var(--val)', rl:'var(--rl)', dota:'var(--dota)', lol:'var(--lol)', r6:'var(--r6)' };
+    document.documentElement.style.setProperty('--cursor-accent', accentMap[activeGame] || 'var(--live)');
+    renderAll();
+  });
+});
+
+/* ---------- spotlight cursor ---------- */
+(function setupCursor(){
+  const fine = window.matchMedia("(pointer: fine)").matches;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!fine || reduced) return;
+
+  const cursor = document.querySelector(".cursor");
+  document.documentElement.style.setProperty('--cursor-accent', 'var(--cs2)'); // matches initial activeGame
+
+  window.addEventListener("mousemove", e=>{
+    cursor.style.left = e.clientX + "px";
+    cursor.style.top = e.clientY + "px";
+  });
+
+  // Delegated (not per-element) so it keeps working after panels re-render
+  // their contents — e.g. the leaderboard header cells get rebuilt on sort.
+  const INTERACTIVE = "a, button, th.sortable";
+  document.addEventListener("mouseover", e=>{
+    if(e.target.closest(INTERACTIVE)) cursor.classList.add("grow");
+  });
+  document.addEventListener("mouseout", e=>{
+    const stillInside = e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest(INTERACTIVE);
+    if(e.target.closest(INTERACTIVE) && !stillInside) cursor.classList.remove("grow");
+  });
+})();
+
+/* ---------- magnetic buttons (GSAP) ---------- */
+(function setupMagneticButtons(){
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduced) return;
+  if(typeof gsap === "undefined"){
+    console.warn("GSAP failed to load from the CDN — magnetic button effect skipped, buttons still work normally.");
+    return;
+  }
+
+  const STRENGTH = 0.35; // how far the button travels relative to cursor offset
+  const MAX_OFFSET = 14;  // px cap so it doesn't drift too far on big buttons
+
+  document.querySelectorAll(".btn").forEach(btn=>{
+    const xTo = gsap.quickTo(btn, "x", { duration: 0.3, ease: "power3" });
+    const yTo = gsap.quickTo(btn, "y", { duration: 0.3, ease: "power3" });
+
+    btn.addEventListener("mousemove", e=>{
+      const r = btn.getBoundingClientRect();
+      const relX = e.clientX - (r.left + r.width / 2);
+      const relY = e.clientY - (r.top + r.height / 2);
+      xTo(Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, relX * STRENGTH)));
+      yTo(Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, relY * STRENGTH)));
+    });
+    btn.addEventListener("mouseleave", ()=>{
+      xTo(0);
+      yTo(0);
+    });
+  });
+})();
+
+/* ---------- news & media data ---------- */
+const NEWS_ARTICLES = [
+  { id:1, game:'cs2',  cat:'Tournaments', title:'Vitality clinch IEM Katowice title in nail-biting five-map final against NAVI', excerpt:'In one of the most dramatic Grand Finals in recent memory, Team Vitality secured the trophy after a gruelling five-map battle that had the crowd on its feet from the very first pistol round.', author:'Marcus Webb', time:'2h ago', img:'https://picsum.photos/seed/cs2hero/900/500' },
+  { id:2, game:'val',  cat:'Transfers',   title:'Sentinels reportedly sign TenZ to multi-year extension ahead of VCT Americas', excerpt:'Sources close to the organisation confirm the deal is done, ending months of speculation about the star fragger\'s future.', author:'Sofia Reyes', time:'4h ago', img:'https://picsum.photos/seed/val1/600/340' },
+  { id:3, game:'rl',   cat:'News',        title:'RLCS 2025 World Championship venue confirmed — 20,000-seat arena booked for August', excerpt:'Psyonix officially announces the biggest Rocket League event in history will take place in front of a record live audience.', author:'Jamie Chen', time:'5h ago', img:'https://picsum.photos/seed/rl1/600/340' },
+  { id:4, game:'dota', cat:'Analysis',    title:'The Aegis drought ends: Team Spirit dominate The International 2025 with near-perfect run', excerpt:'An in-depth breakdown of the drafting patterns and hero picks that propelled Spirit to their second TI championship.', author:'Priya Nair', time:'7h ago', img:'https://picsum.photos/seed/dota1/600/340' },
+  { id:5, game:'lol',  cat:'Transfers',   title:'T1 Faker signs historic four-year deal — will play until at least 2029', excerpt:'The legendary mid laner commits to his home organisation in a deal that shocked the entire League of Legends community.', author:'Dan Okafor', time:'9h ago', img:'https://picsum.photos/seed/lol1/600/340' },
+  { id:6, game:'r6',   cat:'Tournaments', title:'Six Invitational 2025: Brazil reigns supreme as FaZe Clan claim the trophy', excerpt:'A home-crowd atmosphere in São Paulo powered FaZe to the title, defeating Spacestation Gaming 3-1 in the Grand Final.', author:'Alex Morgan', time:'11h ago', img:'https://picsum.photos/seed/r6img/600/340' },
+];
+
+const TRENDING_ITEMS = [
+  { game:'cs2',  tag:'CS2',   title:'ZywOo awarded back-to-back HLTV Player of the Year', time:'1h ago' },
+  { game:'val',  tag:'VAL',   title:'VCT Pacific announces expanded 12-team format for 2026', time:'3h ago' },
+  { game:'rl',   tag:'RL',    title:'Rocket League adds new ranked mode in Season 14 update', time:'6h ago' },
+  { game:'dota', tag:'DOTA',  title:'Patch 7.38 brings sweeping hero reworks and new item tier', time:'8h ago' },
+  { game:'lol',  tag:'LOL',   title:'Worlds 2025 play-in results: four upsets on opening day', time:'10h ago' },
+];
+
+const GAME_TAG_CLASS = { cs2:'tag-cs2', val:'tag-val', rl:'tag-rl', dota:'tag-dota', lol:'tag-lol', r6:'tag-r6' };
+const GAME_TAG_LABEL = { cs2:'CS2', val:'VAL', rl:'RL', dota:'DOTA', lol:'LOL', r6:'R6' };
+
+function renderHero(){
+  const a = NEWS_ARTICLES[0];
+  document.getElementById('heroArticle').innerHTML = `
+    <div class="hero-img">
+      <img src="${a.img}" alt="${a.title}" loading="lazy">
+      <div class="hero-img-overlay"></div>
+    </div>
+    <div class="hero-body">
+      <div>
+        <div class="hero-eyebrow">
+          <span class="ticker-tag ${GAME_TAG_CLASS[a.game]}">${GAME_TAG_LABEL[a.game]}</span>
+          <span class="ticker-tag" style="background:var(--surface-2);color:var(--text-dim)">${a.cat}</span>
+        </div>
+        <div class="hero-title">${a.title}</div>
+        <div class="hero-excerpt">${a.excerpt}</div>
+      </div>
+      <div>
+        <div class="hero-meta">
+          <span class="hero-author">${a.author}</span>
+          <span>·</span>
+          <span>${a.time}</span>
+        </div>
+        <a href="#" class="hero-read-more" style="margin-top:14px;display:inline-flex;">READ FULL STORY →</a>
+      </div>
+    </div>
+  `;
+}
+
+function renderNews(){
+  const articles = NEWS_ARTICLES.slice(1);
+  document.getElementById('newsGrid').innerHTML = articles.map(a => `
+    <div class="news-card">
+      <div class="news-thumb">
+        <img src="${a.img}" alt="${a.title}" loading="lazy">
+      </div>
+      <div class="news-body">
+        <div class="news-tag-row">
+          <span class="ticker-tag ${GAME_TAG_CLASS[a.game]}">${GAME_TAG_LABEL[a.game]}</span>
+          <span class="ticker-tag" style="background:var(--surface-2);color:var(--text-dim);font-size:10px;">${a.cat}</span>
+        </div>
+        <div class="news-headline">${a.title}</div>
+        <div class="news-time">${a.author} · ${a.time}</div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('trendingPanel').innerHTML = `
+    <div class="trending-head">Trending</div>
+    ${TRENDING_ITEMS.map((t,i) => `
+      <div class="trending-item">
+        <div class="trending-num">0${i+1}</div>
+        <div class="trending-text">
+          <div class="trending-title">${t.title}</div>
+          <div class="trending-meta">
+            <span class="ticker-tag ${GAME_TAG_CLASS[t.game]}" style="font-size:9px;padding:1px 5px;">${t.tag}</span>
+            &nbsp;${t.time}
+          </div>
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+/* ---------- category bar ---------- */
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+/* ---------- blob cursor ---------- */
+(function setupBlob(){
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduced) return;
+  const blob = document.querySelector('.blur-shape');
+  let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+  let x = mouseX, y = mouseY;
+  document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+  (function animate(){
+    x += (mouseX - x) * 0.08;
+    y += (mouseY - y) * 0.08;
+    blob.style.transform = `translate(${x - 210}px, ${y - 210}px)`;
+    requestAnimationFrame(animate);
+  })();
+})();
+
+/* ---------- stagger nav menu ---------- */
+(function setupMenu(){
+  const overlay = document.getElementById('menuOverlay');
+  const links   = document.querySelectorAll('#menuLinks li');
+  const toggle  = document.getElementById('menuToggle');
+  const close   = document.getElementById('menuClose');
+  if(!overlay || !toggle) return;
+
+  function openMenu(){
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if(typeof gsap !== 'undefined'){
+      gsap.fromTo(links,
+        { opacity: 0, y: 32 },
+        { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out', stagger: 0.08, delay: 0.05 }
+      );
+    }
+  }
+  function closeMenu(){
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  toggle.addEventListener('click', openMenu);
+  close.addEventListener('click', closeMenu);
+  overlay.addEventListener('click', e => { if(e.target === overlay) closeMenu(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
+})();
+
+/* ---------- scroll reveal ---------- */
+(function setupReveal(){
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+})();
+
+/* ---------- testimonial carousel ---------- */
+(function setupTestimonials(){
+  const TESTIMONIALS = [
+    { name:'Alex Morgan',  role:'Product Designer',  text:'Absolutely transformed how our team tracks matches. The live data flow is seamless.' },
+    { name:'Jamie Chen',   role:'Frontend Engineer',  text:'The dashboard is unmatched. I shipped a tournament tracker in half the time I expected.' },
+    { name:'Priya Nair',   role:'Esports Analyst',    text:'Went from spreadsheets to real standings in one afternoon. The tooling gets out of your way.' },
+    { name:'Marcus Webb',  role:'Team Manager',       text:'Finally a product that respects both design and data. Rare combination in esports tools.' },
+    { name:'Sofia Reyes',  role:'Tournament Organiser',text:'Our broadcast team\'s satisfaction jumped the moment we switched. Results speak for themselves.' },
+    { name:'Dan Okafor',   role:'Tech Lead',          text:'Solid PandaScore integration, great fallback data, and the project ships updates constantly.' },
+  ];
+
+  const track = document.getElementById('testimonialTrack');
+  if(!track) return;
+
+  const items = [...TESTIMONIALS, ...TESTIMONIALS];
+  track.innerHTML = items.map(t => `
+    <div class="t-card">
+      <p class="t-text">"${t.text}"</p>
+      <div class="t-author">
+        <div class="t-avatar">${t.name[0]}</div>
+        <div>
+          <div class="t-name">${t.name}</div>
+          <div class="t-role">${t.role}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+})();
+
+(async function init(){
+  const [cs2, val] = await Promise.all([loadGameData("cs2"), loadGameData("val")]);
+  GAME_DATA.cs2 = cs2;
+  GAME_DATA.val = val;
+  // New games use embedded fallback immediately (no fetch files yet)
+  GAME_DATA.rl   = FALLBACK.rl;
+  GAME_DATA.dota = FALLBACK.dota;
+  GAME_DATA.lol  = FALLBACK.lol;
+  GAME_DATA.r6   = FALLBACK.r6;
+  renderHero();
+  renderNews();
+  renderTicker();
+  renderAll();
+})();
+</script>
+
+</body>
+</html>

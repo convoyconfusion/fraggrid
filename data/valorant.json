@@ -1,0 +1,54 @@
+{
+  "isSample": true,
+  "matches": {
+    "running": [
+      {
+        "id": 0,
+        "status": "running",
+        "scheduledAt": null,
+        "league": "VCT Americas",
+        "serie": "Stage 1",
+        "tournament": "Group Stage",
+        "bestOf": 3,
+        "teamA": { "name": "Sentinels", "acronym": "SEN" },
+        "teamB": { "name": "NRG", "acronym": "NRG" },
+        "scoreA": 1,
+        "scoreB": 1
+      }
+    ],
+    "upcoming": [
+      {
+        "id": 1,
+        "status": "not_started",
+        "scheduledAt": null,
+        "league": "VCT Americas",
+        "serie": "Stage 1",
+        "tournament": "Group Stage",
+        "bestOf": 3,
+        "teamA": { "name": "LOUD", "acronym": "LOUD" },
+        "teamB": { "name": "100 Thieves", "acronym": "100T" },
+        "scoreA": 0,
+        "scoreB": 0
+      }
+    ]
+  },
+  "standings": [
+    { "rank": 1, "team": "Sentinels", "acronym": "SEN", "w": 8, "l": 1, "rd": 14 },
+    { "rank": 2, "team": "LOUD", "acronym": "LOUD", "w": 7, "l": 2, "rd": 11 },
+    { "rank": 3, "team": "NRG", "acronym": "NRG", "w": 6, "l": 3, "rd": 6 },
+    { "rank": 4, "team": "100 Thieves", "acronym": "100T", "w": 5, "l": 4, "rd": 2 },
+    { "rank": 5, "team": "Gen.G", "acronym": "GEN", "w": 5, "l": 4, "rd": -1 },
+    { "rank": 6, "team": "Cloud9", "acronym": "C9", "w": 4, "l": 5, "rd": -4 }
+  ],
+  "standingsContext": "Sample standings — replaced once live",
+  "teams": [
+    { "name": "Sentinels", "acronym": "SEN", "region": "NA" },
+    { "name": "LOUD", "acronym": "LOUD", "region": "BR" },
+    { "name": "NRG", "acronym": "NRG", "region": "NA" },
+    { "name": "100 Thieves", "acronym": "100T", "region": "NA" },
+    { "name": "Gen.G", "acronym": "GEN", "region": "KR" },
+    { "name": "Cloud9", "acronym": "C9", "region": "NA" }
+  ],
+  "playersAvailable": false,
+  "generatedAt": null
+}

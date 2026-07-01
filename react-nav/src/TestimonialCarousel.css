@@ -1,0 +1,112 @@
+.t-marquee {
+  overflow: hidden;
+  height: 520px;
+  position: relative;
+}
+
+/* Fade masks at top and bottom */
+.t-marquee::before,
+.t-marquee::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 80px;
+  z-index: 1;
+  pointer-events: none;
+}
+.t-marquee::before {
+  top: 0;
+  background: linear-gradient(to bottom, #eef1f5, transparent);
+}
+.t-marquee::after {
+  bottom: 0;
+  background: linear-gradient(to top, #eef1f5, transparent);
+}
+
+.t-track {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: scroll-vertical 22s linear infinite;
+}
+
+.t-marquee:hover .t-track {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-vertical {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-track { animation: none; }
+}
+
+/* Reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* Card */
+.t-card {
+  background: #ffffff;
+  border: 1px solid #dde1e7;
+  padding: 20px 22px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+.t-text {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #14171c;
+  margin: 0;
+}
+
+.t-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #dde1e7;
+}
+
+.t-avatar {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #c2410c, #0e7a88);
+  color: #fff;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.t-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #14171c;
+}
+
+.t-role {
+  font-size: 11px;
+  color: #8a9099;
+  margin-top: 1px;
+}

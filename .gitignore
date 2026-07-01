@@ -1,0 +1,29 @@
+# dependencies
+node_modules/
+/.pnp
+.pnp.*
+
+# next.js (web/)
+web/.next/
+web/out/
+web/next-env.d.ts
+web/*.tsbuildinfo
+
+# vite (react-nav/, legacy reference)
+react-nav/dist/
+react-nav/dist-ssr/
+
+# env files - never commit secrets
+.env
+.env*.local
+web/.env
+web/.env*.local
+
+# vercel
+.vercel
+
+# misc
+.DS_Store
+*.log
+npm-debug.log*
+coverage/

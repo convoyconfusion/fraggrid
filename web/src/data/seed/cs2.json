@@ -1,0 +1,71 @@
+{
+  "game": "cs2",
+  "matches": {
+    "running": [
+      {
+        "id": "cs2-r1",
+        "status": "running",
+        "scheduledAt": null,
+        "league": "IEM Katowice",
+        "serie": "Group Stage",
+        "tournament": "Group A",
+        "bestOf": 3,
+        "teamA": { "name": "Vitality", "acronym": "VIT" },
+        "teamB": { "name": "Natus Vincere", "acronym": "NAVI" },
+        "scoreA": 13,
+        "scoreB": 9
+      }
+    ],
+    "upcoming": [
+      {
+        "id": "cs2-u1",
+        "status": "not_started",
+        "scheduledAt": "2026-07-02T15:00:00Z",
+        "league": "IEM Katowice",
+        "serie": "Group Stage",
+        "tournament": "Group A",
+        "bestOf": 3,
+        "teamA": { "name": "Spirit", "acronym": "SPR" },
+        "teamB": { "name": "MOUZ", "acronym": "MOUZ" },
+        "scoreA": 0,
+        "scoreB": 0
+      },
+      {
+        "id": "cs2-u2",
+        "status": "not_started",
+        "scheduledAt": "2026-07-02T18:00:00Z",
+        "league": "IEM Katowice",
+        "serie": "Group Stage",
+        "tournament": "Group B",
+        "bestOf": 3,
+        "teamA": { "name": "G2", "acronym": "G2" },
+        "teamB": { "name": "FaZe", "acronym": "FAZE" },
+        "scoreA": 0,
+        "scoreB": 0
+      }
+    ]
+  },
+  "standings": [
+    { "rank": 1, "team": "Vitality", "acronym": "VIT", "w": 7, "l": 1, "rd": 42 },
+    { "rank": 2, "team": "Natus Vincere", "acronym": "NAVI", "w": 6, "l": 2, "rd": 31 },
+    { "rank": 3, "team": "Spirit", "acronym": "SPR", "w": 6, "l": 2, "rd": 24 },
+    { "rank": 4, "team": "MOUZ", "acronym": "MOUZ", "w": 5, "l": 3, "rd": 11 },
+    { "rank": 5, "team": "G2", "acronym": "G2", "w": 5, "l": 3, "rd": 6 },
+    { "rank": 6, "team": "FaZe", "acronym": "FAZE", "w": 4, "l": 4, "rd": -3 },
+    { "rank": 7, "team": "Astralis", "acronym": "AST", "w": 3, "l": 5, "rd": -9 },
+    { "rank": 8, "team": "Liquid", "acronym": "TL", "w": 2, "l": 6, "rd": -18 }
+  ],
+  "standingsContext": "IEM Katowice — Group Stage (sample data)",
+  "teams": [
+    { "name": "Vitality", "acronym": "VIT", "region": "EU" },
+    { "name": "Natus Vincere", "acronym": "NAVI", "region": "EU" },
+    { "name": "Spirit", "acronym": "SPR", "region": "EU" },
+    { "name": "MOUZ", "acronym": "MOUZ", "region": "EU" },
+    { "name": "G2", "acronym": "G2", "region": "EU" },
+    { "name": "FaZe", "acronym": "FAZE", "region": "EU" },
+    { "name": "Astralis", "acronym": "AST", "region": "EU" },
+    { "name": "Liquid", "acronym": "TL", "region": "NA" }
+  ],
+  "playersAvailable": false,
+  "generatedAt": null
+}

@@ -1,0 +1,54 @@
+{
+  "isSample": true,
+  "matches": {
+    "running": [
+      {
+        "id": 0,
+        "status": "running",
+        "scheduledAt": null,
+        "league": "IEM Katowice",
+        "serie": "Group Stage",
+        "tournament": "Group A",
+        "bestOf": 3,
+        "teamA": { "name": "Vitality", "acronym": "VIT" },
+        "teamB": { "name": "Natus Vincere", "acronym": "NAVI" },
+        "scoreA": 13,
+        "scoreB": 9
+      }
+    ],
+    "upcoming": [
+      {
+        "id": 1,
+        "status": "not_started",
+        "scheduledAt": null,
+        "league": "IEM Katowice",
+        "serie": "Group Stage",
+        "tournament": "Group A",
+        "bestOf": 3,
+        "teamA": { "name": "Spirit", "acronym": "SPR" },
+        "teamB": { "name": "MOUZ", "acronym": "MOUZ" },
+        "scoreA": 0,
+        "scoreB": 0
+      }
+    ]
+  },
+  "standings": [
+    { "rank": 1, "team": "Vitality", "acronym": "VIT", "w": 7, "l": 1, "rd": 42 },
+    { "rank": 2, "team": "Natus Vincere", "acronym": "NAVI", "w": 6, "l": 2, "rd": 31 },
+    { "rank": 3, "team": "Spirit", "acronym": "SPR", "w": 6, "l": 2, "rd": 24 },
+    { "rank": 4, "team": "MOUZ", "acronym": "MOUZ", "w": 5, "l": 3, "rd": 11 },
+    { "rank": 5, "team": "G2", "acronym": "G2", "w": 5, "l": 3, "rd": 6 },
+    { "rank": 6, "team": "FaZe", "acronym": "FAZE", "w": 4, "l": 4, "rd": -3 }
+  ],
+  "standingsContext": "Sample standings — replaced once live",
+  "teams": [
+    { "name": "Vitality", "acronym": "VIT", "region": "EU" },
+    { "name": "Natus Vincere", "acronym": "NAVI", "region": "EU" },
+    { "name": "Spirit", "acronym": "SPR", "region": "EU" },
+    { "name": "MOUZ", "acronym": "MOUZ", "region": "EU" },
+    { "name": "G2", "acronym": "G2", "region": "EU" },
+    { "name": "FaZe", "acronym": "FAZE", "region": "EU" }
+  ],
+  "playersAvailable": false,
+  "generatedAt": null
+}

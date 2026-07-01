@@ -1,0 +1,40 @@
+{
+  "game": "bgmi",
+  "matches": {
+    "running": [],
+    "upcoming": [
+      {
+        "id": "bgmi-u1",
+        "status": "not_started",
+        "scheduledAt": "2026-07-04T13:00:00Z",
+        "league": "BGMI Series",
+        "serie": "League Stage",
+        "tournament": "Week 2, Day 3",
+        "bestOf": null,
+        "teamA": { "name": "Global Esports", "acronym": "GE" },
+        "teamB": { "name": "Soul", "acronym": "SOUL" },
+        "scoreA": 0,
+        "scoreB": 0
+      }
+    ]
+  },
+  "standings": [
+    { "rank": 1, "team": "Soul", "acronym": "SOUL", "w": 4, "l": 18, "rd": 231 },
+    { "rank": 2, "team": "Global Esports", "acronym": "GE", "w": 3, "l": 18, "rd": 214 },
+    { "rank": 3, "team": "GodLike", "acronym": "GDL", "w": 3, "l": 18, "rd": 198 },
+    { "rank": 4, "team": "TSM", "acronym": "TSM", "w": 2, "l": 18, "rd": 176 },
+    { "rank": 5, "team": "Team XO", "acronym": "XO", "w": 2, "l": 18, "rd": 165 },
+    { "rank": 6, "team": "Enigma Gaming", "acronym": "EG", "w": 1, "l": 18, "rd": 142 }
+  ],
+  "standingsContext": "BGMI Series — League Stage (sample data, staff-entered)",
+  "teams": [
+    { "name": "Soul", "acronym": "SOUL", "region": "IN" },
+    { "name": "Global Esports", "acronym": "GE", "region": "IN" },
+    { "name": "GodLike", "acronym": "GDL", "region": "IN" },
+    { "name": "TSM", "acronym": "TSM", "region": "IN" },
+    { "name": "Team XO", "acronym": "XO", "region": "IN" },
+    { "name": "Enigma Gaming", "acronym": "EG", "region": "IN" }
+  ],
+  "playersAvailable": false,
+  "generatedAt": null
+}
