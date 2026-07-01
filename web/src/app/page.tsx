@@ -3,23 +3,26 @@ import { GAME_ORDER, GAMES } from "@/lib/games";
 import { getAllGameData, getLatestArticles } from "@/lib/data";
 import { MatchCard } from "@/components/match-card";
 import { ArticleCard } from "@/components/article-card";
+import { Reveal } from "@/components/reveal";
+import { CursorGlow } from "@/components/cursor-glow";
 
 export default async function HomePage() {
   const [allGames, news] = await Promise.all([getAllGameData(), getLatestArticles(3)]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <section className="mb-14">
-        <h1 className="text-3xl font-bold tracking-tight text-text sm:text-4xl">
+      <section className="relative mb-14">
+        <CursorGlow />
+        <h1 className="relative z-10 text-fluid-3xl font-bold tracking-tight text-text">
           Live stats and rankings, across four games.
         </h1>
-        <p className="mt-3 max-w-2xl text-text-muted">
+        <p className="text-fluid-base relative z-10 mt-3 max-w-2xl text-text-muted">
           CS2 and Valorant update automatically throughout the day. BGMI and PUBG Mobile
           are curated by our team until a reliable live data feed exists for those titles.
         </p>
       </section>
 
-      <section className="mb-14">
+      <Reveal as="section" className="mb-14">
         <SectionHeading title="Live & upcoming" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {GAME_ORDER.map((slug) => {
@@ -46,9 +49,9 @@ export default async function HomePage() {
             );
           })}
         </div>
-      </section>
+      </Reveal>
 
-      <section className="mb-14">
+      <Reveal as="section" className="mb-14">
         <SectionHeading title="Top teams" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {GAME_ORDER.map((slug) => {
@@ -78,16 +81,16 @@ export default async function HomePage() {
             );
           })}
         </div>
-      </section>
+      </Reveal>
 
-      <section>
+      <Reveal as="section">
         <SectionHeading title="Latest news" href="/news" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {news.map((article) => (
             <ArticleCard key={article.slug} article={article} />
           ))}
         </div>
-      </section>
+      </Reveal>
     </div>
   );
 }
@@ -95,7 +98,7 @@ export default async function HomePage() {
 function SectionHeading({ title, href }: { title: string; href?: string }) {
   return (
     <div className="mb-4 flex items-center justify-between">
-      <h2 className="text-xl font-bold text-text">{title}</h2>
+      <h2 className="text-fluid-2xl font-bold text-text">{title}</h2>
       {href && (
         <Link href={href} className="text-sm font-medium text-text-muted hover:text-text">
           View all →

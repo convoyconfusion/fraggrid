@@ -14,6 +14,13 @@
   --accent-pubgm: #3aa0ff;
 
   --live-red: #ff4d4f;
+
+  --text-fluid-sm: clamp(0.8rem, 1.5vw, 0.9rem);
+  --text-fluid-base: clamp(1rem, 2vw, 1.1rem);
+  --text-fluid-lg: clamp(1.2rem, 2.5vw, 1.4rem);
+  --text-fluid-xl: clamp(1.5rem, 3vw, 2rem);
+  --text-fluid-2xl: clamp(2rem, 5vw, 3.5rem);
+  --text-fluid-3xl: clamp(2.5rem, 7vw, 5rem);
 }
 
 @theme inline {
@@ -62,4 +69,94 @@ body {
     0 100%,
     0 8px
   );
+}
+
+/* Spotlight cursor */
+.custom-cursor,
+.custom-cursor a,
+.custom-cursor button {
+  cursor: none;
+}
+
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(123, 94, 167, 0.6);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition:
+    transform 0.1s ease,
+    width 0.2s,
+    height 0.2s,
+    opacity 0.2s ease;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cursor {
+    display: none;
+  }
+}
+
+/* Scroll-triggered reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fluid type scale */
+.text-fluid-sm {
+  font-size: var(--text-fluid-sm);
+}
+
+.text-fluid-base {
+  font-size: var(--text-fluid-base);
+  line-height: 1.7;
+}
+
+.text-fluid-lg {
+  font-size: var(--text-fluid-lg);
+}
+
+.text-fluid-xl {
+  font-size: var(--text-fluid-xl);
+}
+
+.text-fluid-2xl {
+  font-size: var(--text-fluid-2xl);
+  line-height: 1.2;
+}
+
+.text-fluid-3xl {
+  font-size: var(--text-fluid-3xl);
+  line-height: 1.1;
+}
+
+/* Cursor-reactive glow blobs */
+.blur-shape {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.blur-shape-follow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: transform 0.3s ease-out;
 }
