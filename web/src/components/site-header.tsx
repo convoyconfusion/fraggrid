@@ -28,11 +28,14 @@ export function SiteHeader() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-bg/90 backdrop-blur">
+    <header className="sticky top-0 z-50 bg-bg/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight">
+        <Link
+          href="/"
+          className="font-display flex items-center gap-1 text-xl font-bold tracking-tight uppercase"
+        >
           <span className="text-text">FRAG</span>
-          <span className="text-accent-cs2">GRID</span>
+          <span className="text-live-red">GRID</span>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
@@ -78,6 +81,8 @@ export function SiteHeader() {
         </button>
       </div>
 
+      <div className="hazard-stripe" />
+
       <AnimatePresence>
         {open && (
           <motion.div
@@ -100,7 +105,7 @@ export function SiteHeader() {
                     <Link
                       href={`/${slug}`}
                       onClick={() => setOpen(false)}
-                      className="flex items-center gap-3 text-2xl font-semibold text-text"
+                      className="font-display flex items-center gap-3 text-3xl font-bold uppercase tracking-tight text-text"
                     >
                       <span
                         className="h-2.5 w-2.5 rounded-full"
@@ -115,7 +120,7 @@ export function SiteHeader() {
                 <Link
                   href="/news"
                   onClick={() => setOpen(false)}
-                  className="text-2xl font-semibold text-text"
+                  className="font-display text-3xl font-bold uppercase tracking-tight text-text"
                 >
                   News
                 </Link>

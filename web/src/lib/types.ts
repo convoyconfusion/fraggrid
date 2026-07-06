@@ -54,6 +54,32 @@ export interface GameData {
   generatedAt: string | null;
 }
 
+export interface StatPair {
+  label: string;
+  value: string;
+}
+
+export interface PlayerStatRow {
+  player: string;
+  team: string | null;
+  kills: number | null;
+  deaths: number | null;
+  assists: number | null;
+  kd: number | null;
+  mvps: number | null;
+  extraStats: StatPair[];
+}
+
+export interface Tournament {
+  slug: string;
+  game: GameSlug;
+  name: string;
+  prizePool: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  playerStats: PlayerStatRow[];
+}
+
 export interface Article {
   slug: string;
   title: string;

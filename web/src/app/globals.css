@@ -40,6 +40,7 @@
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-barlow);
 }
 
 body {
@@ -132,17 +133,23 @@ body {
 }
 
 .text-fluid-xl {
+  font-family: var(--font-display), var(--font-sans);
   font-size: var(--text-fluid-xl);
 }
 
 .text-fluid-2xl {
+  font-family: var(--font-display), var(--font-sans);
   font-size: var(--text-fluid-2xl);
-  line-height: 1.2;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .text-fluid-3xl {
+  font-family: var(--font-display), var(--font-sans);
   font-size: var(--text-fluid-3xl);
-  line-height: 1.1;
+  line-height: 1;
+  letter-spacing: -0.01em;
 }
 
 /* Cursor-reactive glow blobs */
@@ -159,4 +166,16 @@ body {
   top: 0;
   left: 0;
   transition: transform 0.3s ease-out;
+}
+
+/* Signature: broadcast pit-lane hazard stripe */
+.hazard-stripe {
+  height: 3px;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--live-red),
+    var(--live-red) 10px,
+    var(--surface-2) 10px,
+    var(--surface-2) 20px
+  );
 }

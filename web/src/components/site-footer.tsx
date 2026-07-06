@@ -6,9 +6,9 @@ export function SiteFooter() {
     <footer className="mt-16 border-t border-border">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 md:flex-row md:justify-between">
         <div>
-          <p className="text-lg font-bold tracking-tight">
+          <p className="font-display text-xl font-bold uppercase tracking-tight">
             <span className="text-text">FRAG</span>
-            <span className="text-accent-cs2">GRID</span>
+            <span className="text-live-red">GRID</span>
           </p>
           <p className="mt-2 max-w-xs text-sm text-text-muted">
             Live stats, standings and news for CS2, Valorant, BGMI and PUBG Mobile.

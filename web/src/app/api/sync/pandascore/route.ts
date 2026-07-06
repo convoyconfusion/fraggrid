@@ -41,6 +41,16 @@ interface PandaScoreTournament {
   id: number;
   name: string;
   tier?: string;
+  prizepool?: string | null;
+  begin_at?: string | null;
+  end_at?: string | null;
+}
+
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 function badge(name: string | undefined) {
@@ -152,6 +162,7 @@ async function buildGame(token: string, prefix: string, extraFilter: Record<stri
     standingsContext,
     teams: Array.from(teamMap.values()).slice(0, 8),
     generatedAt: new Date().toISOString(),
+    chosenTournament: chosen,
   };
 }
 
@@ -179,13 +190,41 @@ export async function GET(request: Request) {
 
   for (const job of jobs) {
     try {
-      const data = await buildGame(token, job.prefix, job.extraFilter as Record<string, string>);
+      const { chosenTournament, ...data } = await buildGame(
+        token,
+        job.prefix,
+        job.extraFilter as Record<string, string>
+      );
       await writeClient.createOrReplace({
         _id: `gameData-${job.game}`,
         _type: "gameData",
         game: job.game,
         ...data,
       });
+
+      if (chosenTournament) {
+        const tournamentId = `tournament-${job.game}-${chosenTournament.id}`;
+        await writeClient.createIfNotExists({
+          _id: tournamentId,
+          _type: "tournament",
+          game: job.game,
+          name: chosenTournament.name,
+          slug: { _type: "slug", current: slugify(chosenTournament.name) },
+          externalId: String(chosenTournament.id),
+          playerStats: [],
+        });
+        // Patch only the PandaScore-sourced fields so staff-entered playerStats survive re-syncs.
+        await writeClient
+          .patch(tournamentId)
+          .set({
+            name: chosenTournament.name,
+            prizePool: chosenTournament.prizepool ?? null,
+            startDate: chosenTournament.begin_at ?? null,
+            endDate: chosenTournament.end_at ?? null,
+          })
+          .commit();
+      }
+
       results[job.game] = `ok (${data.matchesRunning.length} running, ${data.matchesUpcoming.length} upcoming, ${data.standings.length} standings)`;
     } catch (e) {
       results[job.game] = `failed: ${(e as Error).message}`;

@@ -1,6 +1,6 @@
 import type { GameSlug } from "./games";
 import { GAME_ORDER } from "./games";
-import type { Article, GameData, Match, StandingRow } from "./types";
+import type { Article, GameData, Match, StandingRow, Tournament } from "./types";
 import { client } from "@/sanity/client";
 
 const GAME_DATA_QUERY = /* groq */ `*[_type == "gameData" && game == $game][0]{
@@ -31,6 +31,26 @@ const ARTICLE_BY_SLUG_QUERY = /* groq */ `*[_type == "article" && slug.current =
   game,
   "author": author->name,
   publishedAt
+}`;
+
+const TOURNAMENTS_QUERY = /* groq */ `*[_type == "tournament" && game == $game] | order(startDate desc){
+  "slug": slug.current,
+  game,
+  name,
+  prizePool,
+  startDate,
+  endDate,
+  playerStats
+}`;
+
+const TOURNAMENT_BY_SLUG_QUERY = /* groq */ `*[_type == "tournament" && game == $game && slug.current == $slug][0]{
+  "slug": slug.current,
+  game,
+  name,
+  prizePool,
+  startDate,
+  endDate,
+  playerStats
 }`;
 
 function emptyGameData(game: GameSlug): GameData {
@@ -123,4 +143,18 @@ export async function getArticle(slug: string): Promise<Article | null> {
 
 export async function getLatestArticles(count: number): Promise<Article[]> {
   return (await getArticles()).slice(0, count);
+}
+
+function normalizeTournament(raw: Tournament): Tournament {
+  return { ...raw, playerStats: raw.playerStats ?? [] };
+}
+
+export async function getTournaments(game: GameSlug): Promise<Tournament[]> {
+  const rows = await client.fetch<Tournament[]>(TOURNAMENTS_QUERY, { game });
+  return (rows ?? []).map(normalizeTournament);
+}
+
+export async function getTournament(game: GameSlug, slug: string): Promise<Tournament | null> {
+  const row = await client.fetch<Tournament | null>(TOURNAMENT_BY_SLUG_QUERY, { game, slug });
+  return row ? normalizeTournament(row) : null;
 }
