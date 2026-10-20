@@ -1,9 +1,6 @@
-{
-  "framework": "nextjs",
-  "crons": [
-    {
-      "path": "/api/sync/pandascore",
-      "schedule": "*/15 * * * *"
-    }
-  ]
-}
+   {
+     "framework": "nextjs",
+     "crons": [
+       { "path": "/api/sync/pandascore", "schedule": "0 6 * * *" }
+     ]
+   }
