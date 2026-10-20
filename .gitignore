@@ -27,3 +27,5 @@ web/.env*.local
 *.log
 npm-debug.log*
 coverage/
+
+.claude/

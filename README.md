@@ -1,49 +1,60 @@
-# FRAGGRID — setup guide (no coding required)
+# FRAGGRID
 
-This folder is your whole website + its live-data pipeline. You don't need to
-write or edit any code — just follow these steps once.
+An esports stats and news platform for **CS2, Valorant, BGMI and PUBG Mobile**: live and upcoming matches, league standings, tournament player stats, prize pools and editorial coverage in one place.
 
-## What's in here
-- `index.html` — the website itself
-- `data/cs2.json`, `data/valorant.json` — the live data the site reads (starts as sample data, gets overwritten automatically once it's live)
-- `scripts/fetch-data.js` — the script that pulls fresh data from PandaScore
-- `.github/workflows/update-data.yml` — tells GitHub to run that script every 15 minutes automatically
+**Live site:** _add your Vercel link here_
 
-## Step 1 — Put this project on GitHub
-1. Go to github.com and create a free account if you don't have one.
-2. Click **New repository**. Name it whatever you like (e.g. `fraggrid`). Keep it **Public** (required for the free hosting in Step 3) or Private if you upgrade hosting later.
-3. On the new repo page, use **"uploading an existing file"** and drag in everything from this folder, keeping the same folder structure (the `.github` and `data` and `scripts` folders need to come along, not just `index.html`).
-4. Commit the files.
+## Features
 
-## Step 2 — Add your PandaScore key as a secret
-Never paste your API key directly into any file — this step keeps it private.
-1. In your new repo, go to **Settings → Secrets and variables → Actions**.
-2. Click **New repository secret**.
-3. Name: `PANDASCORE_TOKEN`
-4. Value: paste your PandaScore API token (find it on your PandaScore dashboard).
-5. Save.
+- **Live match data for CS2 and Valorant**, synced from the PandaScore API every 15 minutes by a scheduled job
+- **Standings, tournaments and player stats** on dedicated pages for each game
+- **News section** with articles written and published through a headless CMS
+- **BGMI and PUBG Mobile** data curated by editors in the CMS, since no reliable live feed exists for those titles
+- Responsive, broadcast-HUD style interface with scroll reveals and motion effects
 
-## Step 3 — Turn on the live updates
-1. Go to the **Actions** tab in your repo.
-2. You should see a workflow called **"Update FRAGGRID data"**. Click it.
-3. Click **Run workflow** (this triggers it manually the first time, instead of waiting 15 minutes).
-4. After it finishes (usually under a minute), check the `data/` folder in your repo — `cs2.json` and `valorant.json` should now show real matches instead of the sample placeholders.
+## Tech stack
 
-From now on, this runs automatically every 15 minutes — you don't need to touch it again.
+Next.js (App Router) · React · TypeScript · Tailwind CSS · Framer Motion · Sanity CMS (GROQ) · PandaScore REST API · Vercel (hosting + Cron Jobs)
 
-## Step 4 — Put the site online
-Easiest free option: **Netlify**.
-1. Go to netlify.com, sign up, choose "Import an existing project from GitHub."
-2. Pick your `fraggrid` repo. No build command needed — leave the build settings blank/default, since this is a plain HTML site.
-3. Deploy. Netlify gives you a live URL in under a minute.
+## Architecture
 
-Whenever the GitHub Action updates `data/*.json`, redeploy on Netlify (or set up Netlify's auto-deploy-on-push, which is the default — so it just happens automatically).
+```
+PandaScore API ──(every 15 min, Vercel Cron)──▶ /api/sync/pandascore ──▶ Sanity CMS
+                                                                          │
+Editors (Sanity Studio at /studio) ── articles, BGMI/PUBGM data ──────────┤
+                                                                          ▼
+                                                        Next.js pages (server components)
+```
 
-## What's live vs. sample right now
-- ✅ Live: match schedules/scores, league standings, team listings (CS2 + Valorant)
-- 🔶 Sample only: the Player Leaderboard panel (ratings/ADR/K-D) — PandaScore's free tier doesn't include per-player stats. That needs their paid Historical plan.
+- **Sync route** (`web/src/app/api/sync/pandascore/route.ts`): fetches matches, standings and tournaments for CS2 and Valorant, reshapes them, and upserts them into Sanity. It is protected by a `CRON_SECRET` bearer token so only the scheduler can trigger it, and it patches only API-sourced fields so editor-entered player stats survive each sync.
+- **Data layer** (`web/src/lib/data.ts`): GROQ queries that pages use to read game data, tournaments and articles from Sanity.
+- **Dynamic routes**: `/[game]`, `/[game]/tournaments/[slug]`, `/news` and `/news/[slug]`.
+- **Content models** (`web/src/sanity/schemaTypes/`): article, author, tournament and game data.
+- **Secrets** (PandaScore and Sanity tokens) live only in server-side environment variables, never in client code.
 
-## If something looks wrong
-Open the Action run's log (Actions tab → click the run → click the job) — it
-prints exactly what it fetched and any errors. Send that log back and it can
-be debugged from there.
+## Project structure
+
+```
+web/                Next.js app (the live site)
+├── src/app/        routes, layouts and the sync API route
+├── src/components/ match cards, standings and stats tables, header/footer
+├── src/lib/        data fetching, game config, shared types
+├── src/sanity/     CMS client and content schemas
+└── scripts/        one-off script to seed Sanity with sample data
+index.html, react-nav/, scripts/, data/   earlier prototypes (static HTML version and a React navigation experiment)
+```
+
+## Run locally
+
+```bash
+cd web
+cp .env.local.example .env.local   # fill in Sanity and PandaScore values
+npm install
+npm run dev
+```
+
+## Roadmap
+
+- Real player leaderboards (requires PandaScore's paid historical data plan)
+- Live data for BGMI and PUBG Mobile once a reliable source is available
+- User accounts with favourite teams and match alerts

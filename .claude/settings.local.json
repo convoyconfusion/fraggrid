@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "PowerShell(Get-Content \"C:\\\\Users\\\\naghu\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-naghu-Downloads-fraggrid-project-2\\\\487c44c3-4f0b-4cb9-9121-c821790926ca\\\\tasks\\\\b3bevknur.output\" -Wait -Tail 20)",
-      "mcp__Claude_Preview__preview_start",
-      "PowerShell(npx @anthropic-ai/claude-code skill install https://github.com/nextlevelbuilder/ui-ux-pro-max-skill 2>&1)"
-    ]
-  }
-}
